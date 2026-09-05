@@ -2,6 +2,7 @@ package com.dineshmane.controller;
 
 import com.dineshmane.entity.Feedback;
 import com.dineshmane.service.FeedbackService;
+import com.dineshmane.service.SentimentAnalysisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
+    private final SentimentAnalysisService sentimentAnalysisService;
 
     @GetMapping
     public ResponseEntity<List<Feedback>> getAllFeedbacks(){
@@ -24,7 +26,8 @@ public class FeedbackController {
 
     @PostMapping
     public ResponseEntity<Feedback> saveFeedback(@RequestBody String content){
-        Feedback feedback = null;
-        return ResponseEntity.status(HttpStatus.CREATED).body(feedback);
+        Feedback feedback = sentimentAnalysisService.analyzeFeedback(content);
+        Feedback saved = feedbackService.saveFeedback(feedback);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 }

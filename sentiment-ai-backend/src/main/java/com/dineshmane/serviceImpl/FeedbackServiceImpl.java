@@ -16,6 +16,11 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<Feedback> getAllFeedbacks() {
-        return List.of();
+        return feedbackRepository.findAll();
+    }
+
+    @Override
+    public Feedback saveFeedback(Feedback feedback) {
+        return feedbackRepository.save(feedback);
     }
 }
