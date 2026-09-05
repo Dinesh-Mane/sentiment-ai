@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
@@ -6,8 +6,17 @@ import './App.css'
 import axios from 'axios'
 
 function App() {
-  
+
   const [feedback, setfeedback] = useState("");
+  const [feedbackList, setFeedbackList] = useState([]);
+
+  useEffect(() => {
+    axios
+    .get("http://localhost:8080/api/feedback")
+    .then((response) => setFeedbackList(response.data))
+    .error((error) => console.error(error));
+  }, []);
+
   const handleFeedbackSubmit = async (e) => {
 
     e.preventDefault();
@@ -15,6 +24,7 @@ function App() {
       headers: {"Content-Type":"text/plain"}
     })
 
+    setFeedbackList([...feedbackList, response.data])
     setfeedback("");
 
   };
@@ -47,11 +57,13 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>feeback will come here.</td>
-              <td>0.5</td>
-              <td>POSITIVE</td>
-            </tr>
+            {feedbackList.map((item) => (
+              <tr key={item.id}>
+                <td>{item.content}</td>
+                <td>{item.sentimentScore}</td>
+                <td>{item.sentiment}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
 
