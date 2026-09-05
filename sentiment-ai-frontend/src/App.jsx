@@ -3,18 +3,33 @@ import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import './App.css'
+import axios from 'axios'
 
 function App() {
-  const [count, setCount] = useState(0)
+  
+  const [feedback, setfeedback] = useState("");
+  const handleFeedbackSubmit = async (e) => {
 
+    e.preventDefault();
+    const response = await axios.post("http://localhost:8080/api/feedback", feedback, {
+      headers: {"Content-Type":"text/plain"}
+    })
+
+    setfeedback("");
+
+  };
+  
   return (
     <>
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">
           SentimentAI – Intelligent Feedback Sentiment Analyzer
         </h1>
-        <form className="mb-4">
-          <textarea className="w-full p-2 border rounded mb-2" placeholder='Enter your Feedback...' rows="4"></textarea>
+        <form onSubmit={handleFeedbackSubmit} className="mb-4">
+          <textarea 
+            value={feedback}
+            onChange={(e)=> setfeedback(e.target.value)}
+            className="w-full p-2 border rounded mb-2" placeholder='Enter your Feedback...' rows="4"></textarea>
           <button
             type="submit"
             className="px-4 py-2 rounded bg-blue-600 text-white">
